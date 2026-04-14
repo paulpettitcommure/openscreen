@@ -49,7 +49,7 @@ export interface TrimRegion {
 	endMs: number;
 }
 
-export type AnnotationType = "text" | "image" | "figure" | "blur";
+export type AnnotationType = "text" | "image" | "figure" | "blur" | "callout";
 
 export type ArrowDirection =
 	| "up"
@@ -65,6 +65,16 @@ export interface FigureData {
 	arrowDirection: ArrowDirection;
 	color: string;
 	strokeWidth: number;
+}
+
+export type CalloutTailPosition = "top" | "bottom" | "left" | "right";
+
+export interface CalloutData {
+	tailPosition: CalloutTailPosition;
+	tailOffset: number; // Percentage (0-100) along the side
+	backgroundColor: string;
+	color: string;
+	borderRadius: number;
 }
 
 export type BlurShape = "rectangle" | "oval" | "freehand";
@@ -115,6 +125,7 @@ export interface AnnotationRegion {
 	zIndex: number;
 	figureData?: FigureData;
 	blurData?: BlurData;
+	calloutData?: CalloutData;
 }
 
 export const DEFAULT_ANNOTATION_POSITION: AnnotationPosition = {
@@ -129,8 +140,8 @@ export const DEFAULT_ANNOTATION_SIZE: AnnotationSize = {
 
 export const DEFAULT_ANNOTATION_STYLE: AnnotationTextStyle = {
 	color: "#ffffff",
-	backgroundColor: "transparent",
-	fontSize: 32,
+	backgroundColor: "#240F6E", // Commure Navy
+	fontSize: 24,
 	fontFamily: "Inter",
 	fontWeight: "bold",
 	fontStyle: "normal",
@@ -140,8 +151,16 @@ export const DEFAULT_ANNOTATION_STYLE: AnnotationTextStyle = {
 
 export const DEFAULT_FIGURE_DATA: FigureData = {
 	arrowDirection: "right",
-	color: "#34B27B",
+	color: "#005DE8", // Commure Blue
 	strokeWidth: 4,
+};
+
+export const DEFAULT_CALLOUT_DATA: CalloutData = {
+	tailPosition: "bottom",
+	tailOffset: 50,
+	backgroundColor: "#240F6E", // Commure Navy
+	color: "#ffffff",
+	borderRadius: 12,
 };
 
 export const DEFAULT_BLUR_FREEHAND_POINTS: Array<{ x: number; y: number }> = [

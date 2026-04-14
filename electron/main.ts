@@ -14,7 +14,12 @@ import {
 } from "electron";
 import { mainT, setMainLocale } from "./i18n";
 import { registerIpcHandlers } from "./ipc/handlers";
-import { createEditorWindow, createHudOverlayWindow, createSourceSelectorWindow } from "./windows";
+import {
+	createEditorWindow,
+	createHudOverlayWindow,
+	createRegionSelectorWindow,
+	createSourceSelectorWindow,
+} from "./windows";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -60,6 +65,7 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 // Window references
 let mainWindow: BrowserWindow | null = null;
 let sourceSelectorWindow: BrowserWindow | null = null;
+let regionSelectorWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let selectedSourceName = "";
 const isMac = process.platform === "darwin";
@@ -322,6 +328,15 @@ function createSourceSelectorWindowWrapper() {
 	return sourceSelectorWindow;
 }
 
+function createRegionSelectorWindowWrapper() {
+	const win = createRegionSelectorWindow();
+	regionSelectorWindow = win;
+	win.on("closed", () => {
+		regionSelectorWindow = null;
+	});
+	return win;
+}
+
 // On macOS, applications and their menu bar stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
@@ -386,8 +401,10 @@ app.whenReady().then(async () => {
 	registerIpcHandlers(
 		createEditorWindowWrapper,
 		createSourceSelectorWindowWrapper,
+		createRegionSelectorWindowWrapper,
 		() => mainWindow,
 		() => sourceSelectorWindow,
+		() => regionSelectorWindow,
 		(recording: boolean, sourceName: string) => {
 			selectedSourceName = sourceName;
 			if (!tray) createTray();

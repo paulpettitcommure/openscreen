@@ -27,11 +27,20 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	openSourceSelector: () => {
 		return ipcRenderer.invoke("open-source-selector");
 	},
+	openRegionSelector: () => {
+		return ipcRenderer.invoke("open-region-selector");
+	},
 	selectSource: (source: ProcessedDesktopSource) => {
 		return ipcRenderer.invoke("select-source", source);
 	},
+	selectRegion: (region: import("../src/components/video-editor/types").CropRegion) => {
+		return ipcRenderer.invoke("select-region", region);
+	},
 	getSelectedSource: () => {
 		return ipcRenderer.invoke("get-selected-source");
+	},
+	clearSelectedSource: () => {
+		return ipcRenderer.invoke("clear-selected-source");
 	},
 	requestCameraAccess: () => {
 		return ipcRenderer.invoke("request-camera-access");

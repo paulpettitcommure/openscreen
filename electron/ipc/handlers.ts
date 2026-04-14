@@ -352,8 +352,10 @@ function sampleCursorPoint() {
 export function registerIpcHandlers(
 	createEditorWindow: () => void,
 	createSourceSelectorWindow: () => BrowserWindow,
+	createRegionSelectorWindow: () => BrowserWindow,
 	getMainWindow: () => BrowserWindow | null,
 	getSourceSelectorWindow: () => BrowserWindow | null,
+	getRegionSelectorWindow: () => BrowserWindow | null,
 	onRecordingStateChange?: (recording: boolean, sourceName: string) => void,
 	switchToHud?: () => void,
 ) {
@@ -397,6 +399,10 @@ export function registerIpcHandlers(
 		return selectedSource;
 	});
 
+	ipcMain.handle("clear-selected-source", () => {
+		selectedSource = null;
+	});
+
 	ipcMain.handle("request-camera-access", async () => {
 		if (process.platform !== "darwin") {
 			return { success: true, granted: true, status: "granted" };
@@ -436,6 +442,36 @@ export function registerIpcHandlers(
 			return;
 		}
 		createSourceSelectorWindow();
+	});
+
+	ipcMain.handle("open-region-selector", () => {
+		const regionSelectorWin = getRegionSelectorWindow();
+		if (regionSelectorWin) {
+			regionSelectorWin.focus();
+			return;
+		}
+		createRegionSelectorWindow();
+	});
+
+	ipcMain.handle("select-region", (_, region: import("../../src/components/video-editor/types").CropRegion) => {
+		// Automatically set the source to primary screen and apply crop
+		const primaryDisplay = screen.getPrimaryDisplay();
+		selectedSource = {
+			id: `screen:${primaryDisplay.id}`,
+			name: "Custom Region",
+			display_id: primaryDisplay.id.toString(),
+		};
+
+		// Store the region to be used by the recorder
+		// This is a bit of a hack since CropRegion is not yet used in recording,
+		// but we'll adapt the recorder to use it.
+		(selectedSource as any).crop = region;
+
+		const regionSelectorWin = getRegionSelectorWindow();
+		if (regionSelectorWin) {
+			regionSelectorWin.close();
+		}
+		return selectedSource;
 	});
 
 	ipcMain.handle("switch-to-editor", () => {

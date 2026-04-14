@@ -49,6 +49,7 @@ import type {
 	AnnotationRegion,
 	AnnotationType,
 	BlurData,
+	CalloutData,
 	CropRegion,
 	FigureData,
 	PlaybackSpeed,
@@ -210,6 +211,7 @@ interface SettingsPanelProps {
 	onAnnotationTypeChange?: (id: string, type: AnnotationType) => void;
 	onAnnotationStyleChange?: (id: string, style: Partial<AnnotationRegion["style"]>) => void;
 	onAnnotationFigureDataChange?: (id: string, figureData: FigureData) => void;
+	onAnnotationCalloutDataChange?: (id: string, calloutData: CalloutData) => void;
 	onAnnotationDelete?: (id: string) => void;
 	selectedBlurId?: string | null;
 	blurRegions?: AnnotationRegion[];
@@ -301,6 +303,7 @@ export function SettingsPanel({
 	onAnnotationTypeChange,
 	onAnnotationStyleChange,
 	onAnnotationFigureDataChange,
+	onAnnotationCalloutDataChange,
 	onAnnotationDelete,
 	selectedBlurId,
 	blurRegions = [],
@@ -355,7 +358,7 @@ export function SettingsPanel({
 		"#FF5722",
 		"#8BC34A",
 		"#FFC107",
-		"#34B27B",
+		"#005DE8",
 		"#000000",
 		"#607D8B",
 		"#795548",
@@ -569,6 +572,11 @@ export function SettingsPanel({
 						? (figureData) => onAnnotationFigureDataChange(selectedAnnotation.id, figureData)
 						: undefined
 				}
+				onCalloutDataChange={
+					onAnnotationCalloutDataChange
+						? (calloutData) => onAnnotationCalloutDataChange(selectedAnnotation.id, calloutData)
+						: undefined
+				}
 				onDelete={() => onAnnotationDelete(selectedAnnotation.id)}
 			/>
 		);
@@ -593,7 +601,7 @@ export function SettingsPanel({
 						<span className="text-sm font-medium text-slate-200">{t("zoom.level")}</span>
 						<div className="flex items-center gap-2">
 							{zoomEnabled && selectedZoomDepth && (
-								<span className="text-[10px] uppercase tracking-wider font-medium text-[#34B27B] bg-[#34B27B]/10 px-2 py-0.5 rounded-full">
+								<span className="text-[10px] uppercase tracking-wider font-medium text-[#005DE8] bg-[#005DE8]/10 px-2 py-0.5 rounded-full">
 									{ZOOM_DEPTH_OPTIONS.find((o) => o.depth === selectedZoomDepth)?.label}
 								</span>
 							)}
@@ -614,7 +622,7 @@ export function SettingsPanel({
 										"duration-200 ease-out",
 										zoomEnabled ? "opacity-100 cursor-pointer" : "opacity-40 cursor-not-allowed",
 										isActive
-											? "border-[#34B27B] bg-[#34B27B] text-white shadow-[#34B27B]/20"
+											? "border-[#005DE8] bg-[#005DE8] text-white shadow-[#005DE8]/20"
 											: "border-white/5 bg-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10 hover:text-slate-200",
 									)}
 								>
@@ -643,7 +651,7 @@ export function SettingsPanel({
 												"h-auto w-full rounded-lg border px-2 py-2 text-center shadow-sm transition-all",
 												"duration-200 ease-out cursor-pointer",
 												isActive
-													? "border-[#34B27B] bg-[#34B27B] text-white shadow-[#34B27B]/20"
+													? "border-[#005DE8] bg-[#005DE8] text-white shadow-[#005DE8]/20"
 													: "border-white/5 bg-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10 hover:text-slate-200",
 											)}
 										>
@@ -683,7 +691,7 @@ export function SettingsPanel({
 												"h-auto w-full rounded-lg border px-1 py-2 text-center shadow-sm transition-all",
 												"duration-200 ease-out cursor-pointer",
 												isActive
-													? "border-[#34B27B] bg-[#34B27B] text-white shadow-[#34B27B]/20"
+													? "border-[#005DE8] bg-[#005DE8] text-white shadow-[#005DE8]/20"
 													: "border-white/5 bg-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10 hover:text-slate-200",
 											)}
 										>
@@ -807,7 +815,7 @@ export function SettingsPanel({
 						>
 							<AccordionTrigger className="py-2.5 hover:no-underline">
 								<div className="flex items-center gap-2">
-									<Sparkles className="w-4 h-4 text-[#34B27B]" />
+									<Sparkles className="w-4 h-4 text-[#005DE8]" />
 									<span className="text-xs font-medium">{t("layout.title")}</span>
 								</div>
 							</AccordionTrigger>
@@ -863,7 +871,7 @@ export function SettingsPanel({
 													className={cn(
 														"h-10 rounded-lg border flex flex-col items-center justify-center gap-0.5 transition-all",
 														webcamMaskShape === shape.value
-															? "bg-[#34B27B] border-[#34B27B] text-white"
+															? "bg-[#005DE8] border-[#005DE8] text-white"
 															: "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-400",
 													)}
 												>
@@ -951,7 +959,7 @@ export function SettingsPanel({
 					<AccordionItem value="effects" className="border-white/5 rounded-xl bg-white/[0.02] px-3">
 						<AccordionTrigger className="py-2.5 hover:no-underline">
 							<div className="flex items-center gap-2">
-								<Sparkles className="w-4 h-4 text-[#34B27B]" />
+								<Sparkles className="w-4 h-4 text-[#005DE8]" />
 								<span className="text-xs font-medium">{t("effects.title")}</span>
 							</div>
 						</AccordionTrigger>
@@ -964,7 +972,7 @@ export function SettingsPanel({
 									<Switch
 										checked={showBlur}
 										onCheckedChange={onBlurChange}
-										className="data-[state=checked]:bg-[#34B27B] scale-90"
+										className="data-[state=checked]:bg-[#005DE8] scale-90"
 									/>
 								</div>
 							</div>
@@ -986,7 +994,7 @@ export function SettingsPanel({
 										min={0}
 										max={1}
 										step={0.01}
-										className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+										className="w-full [&_[role=slider]]:bg-[#005DE8] [&_[role=slider]]:border-[#005DE8] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 									/>
 								</div>
 								<div className="p-2 rounded-lg bg-white/5 border border-white/5">
@@ -1005,7 +1013,7 @@ export function SettingsPanel({
 										min={0}
 										max={1}
 										step={0.01}
-										className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+										className="w-full [&_[role=slider]]:bg-[#005DE8] [&_[role=slider]]:border-[#005DE8] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 									/>
 								</div>
 								<div className="p-2 rounded-lg bg-white/5 border border-white/5">
@@ -1022,7 +1030,7 @@ export function SettingsPanel({
 										min={0}
 										max={16}
 										step={0.5}
-										className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+										className="w-full [&_[role=slider]]:bg-[#005DE8] [&_[role=slider]]:border-[#005DE8] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 									/>
 								</div>
 								<div
@@ -1044,7 +1052,7 @@ export function SettingsPanel({
 										max={100}
 										step={1}
 										disabled={webcamLayoutPreset === "vertical-stack"}
-										className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+										className="w-full [&_[role=slider]]:bg-[#005DE8] [&_[role=slider]]:border-[#005DE8] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 									/>
 								</div>
 							</div>
@@ -1066,7 +1074,7 @@ export function SettingsPanel({
 					>
 						<AccordionTrigger className="py-2.5 hover:no-underline">
 							<div className="flex items-center gap-2">
-								<Palette className="w-4 h-4 text-[#34B27B]" />
+								<Palette className="w-4 h-4 text-[#005DE8]" />
 								<span className="text-xs font-medium">{t("background.title")}</span>
 							</div>
 						</AccordionTrigger>
@@ -1075,19 +1083,19 @@ export function SettingsPanel({
 								<TabsList className="mb-2 bg-white/5 border border-white/5 p-0.5 w-full grid grid-cols-3 rounded-lg">
 									<TabsTrigger
 										value="image"
-										className="data-[state=active]:bg-[#34B27B] data-[state=active]:text-white text-slate-400 text-[10px] py-1 rounded-md transition-all"
+										className="data-[state=active]:bg-[#005DE8] data-[state=active]:text-white text-slate-400 text-[10px] py-1 rounded-md transition-all"
 									>
 										{t("background.image")}
 									</TabsTrigger>
 									<TabsTrigger
 										value="color"
-										className="data-[state=active]:bg-[#34B27B] data-[state=active]:text-white text-slate-400 text-[10px] py-1 rounded-md transition-all"
+										className="data-[state=active]:bg-[#005DE8] data-[state=active]:text-white text-slate-400 text-[10px] py-1 rounded-md transition-all"
 									>
 										{t("background.color")}
 									</TabsTrigger>
 									<TabsTrigger
 										value="gradient"
-										className="data-[state=active]:bg-[#34B27B] data-[state=active]:text-white text-slate-400 text-[10px] py-1 rounded-md transition-all"
+										className="data-[state=active]:bg-[#005DE8] data-[state=active]:text-white text-slate-400 text-[10px] py-1 rounded-md transition-all"
 									>
 										{t("background.gradient")}
 									</TabsTrigger>
@@ -1105,7 +1113,7 @@ export function SettingsPanel({
 										<Button
 											onClick={() => fileInputRef.current?.click()}
 											variant="outline"
-											className="w-full gap-2 bg-white/5 text-slate-200 border-white/10 hover:bg-[#34B27B] hover:text-white hover:border-[#34B27B] transition-all h-7 text-[10px]"
+											className="w-full gap-2 bg-white/5 text-slate-200 border-white/10 hover:bg-[#005DE8] hover:text-white hover:border-[#005DE8] transition-all h-7 text-[10px]"
 										>
 											<Upload className="w-3 h-3" />
 											{t("background.uploadCustom")}
@@ -1120,8 +1128,8 @@ export function SettingsPanel({
 														className={cn(
 															"aspect-square w-9 h-9 rounded-md border-2 overflow-hidden cursor-pointer transition-all duration-200 relative group shadow-sm",
 															isSelected
-																? "border-[#34B27B] ring-1 ring-[#34B27B]/30"
-																: "border-white/10 hover:border-[#34B27B]/40 opacity-80 hover:opacity-100 bg-white/5",
+																? "border-[#005DE8] ring-1 ring-[#005DE8]/30"
+																: "border-white/10 hover:border-[#005DE8]/40 opacity-80 hover:opacity-100 bg-white/5",
 														)}
 														style={{
 															backgroundImage: `url(${imageUrl})`,
@@ -1164,8 +1172,8 @@ export function SettingsPanel({
 														className={cn(
 															"aspect-square w-9 h-9 rounded-md border-2 overflow-hidden cursor-pointer transition-all duration-200 shadow-sm",
 															isSelected
-																? "border-[#34B27B] ring-1 ring-[#34B27B]/30"
-																: "border-white/10 hover:border-[#34B27B]/40 opacity-80 hover:opacity-100 bg-white/5",
+																? "border-[#005DE8] ring-1 ring-[#005DE8]/30"
+																: "border-white/10 hover:border-[#005DE8]/40 opacity-80 hover:opacity-100 bg-white/5",
 														)}
 														style={{
 															backgroundImage: `url(${path})`,
@@ -1205,8 +1213,8 @@ export function SettingsPanel({
 													className={cn(
 														"aspect-square w-9 h-9 rounded-md border-2 overflow-hidden cursor-pointer transition-all duration-200 shadow-sm",
 														gradient === g
-															? "border-[#34B27B] ring-1 ring-[#34B27B]/30"
-															: "border-white/10 hover:border-[#34B27B]/40 opacity-80 hover:opacity-100 bg-white/5",
+															? "border-[#005DE8] ring-1 ring-[#005DE8]/30"
+															: "border-white/10 hover:border-[#005DE8]/40 opacity-80 hover:opacity-100 bg-white/5",
 													)}
 													style={{ background: g }}
 													aria-label={t("background.gradientLabel", {
@@ -1273,7 +1281,7 @@ export function SettingsPanel({
 											max={max}
 											value={getCropPixelValue(field)}
 											onChange={(e) => handleCropNumericChange(field, Number(e.target.value))}
-											className="w-[90px] h-8 rounded-md border border-white/10 bg-white/5 px-2 text-xs text-slate-200 outline-none focus:border-[#34B27B]/50 focus:ring-1 focus:ring-[#34B27B]/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+											className="w-[90px] h-8 rounded-md border border-white/10 bg-white/5 px-2 text-xs text-slate-200 outline-none focus:border-[#005DE8]/50 focus:ring-1 focus:ring-[#005DE8]/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 										/>
 									</div>
 								))}
@@ -1286,7 +1294,7 @@ export function SettingsPanel({
 										<select
 											value={cropAspectRatio}
 											onChange={(e) => applyCropAspectPreset(e.target.value)}
-											className="h-8 rounded-md border border-white/10 bg-[#1a1a1f] px-2 text-xs text-slate-200 outline-none focus:border-[#34B27B]/50 cursor-pointer"
+											className="h-8 rounded-md border border-white/10 bg-[#1a1a1f] px-2 text-xs text-slate-200 outline-none focus:border-[#005DE8]/50 cursor-pointer"
 										>
 											<option value="" className="bg-[#1a1a1f] text-slate-200">
 												{t("crop.free")}
@@ -1316,7 +1324,7 @@ export function SettingsPanel({
 											className={cn(
 												"h-8 w-8 flex items-center justify-center rounded-md border transition-all",
 												cropAspectLocked
-													? "border-[#34B27B]/50 bg-[#34B27B]/10 text-[#34B27B]"
+													? "border-[#005DE8]/50 bg-[#005DE8]/10 text-[#005DE8]"
 													: "border-white/10 bg-white/5 text-slate-400 hover:text-slate-200",
 											)}
 											title={
@@ -1341,7 +1349,7 @@ export function SettingsPanel({
 								<Button
 									onClick={() => setShowCropModal(false)}
 									size="lg"
-									className="bg-[#34B27B] hover:bg-[#34B27B]/90 text-white"
+									className="bg-[#005DE8] hover:bg-[#005DE8]/90 text-white"
 								>
 									{t("crop.done")}
 								</Button>
@@ -1358,7 +1366,7 @@ export function SettingsPanel({
 						className={cn(
 							"flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border transition-all text-xs font-medium",
 							exportFormat === "mp4"
-								? "bg-[#34B27B]/10 border-[#34B27B]/50 text-white"
+								? "bg-[#005DE8]/10 border-[#005DE8]/50 text-white"
 								: "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-slate-200",
 						)}
 					>
@@ -1371,7 +1379,7 @@ export function SettingsPanel({
 						className={cn(
 							"flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border transition-all text-xs font-medium",
 							exportFormat === "gif"
-								? "bg-[#34B27B]/10 border-[#34B27B]/50 text-white"
+								? "bg-[#005DE8]/10 border-[#005DE8]/50 text-white"
 								: "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-slate-200",
 						)}
 					>
@@ -1464,7 +1472,7 @@ export function SettingsPanel({
 								<Switch
 									checked={gifLoop}
 									onCheckedChange={onGifLoopChange}
-									className="data-[state=checked]:bg-[#34B27B] scale-75"
+									className="data-[state=checked]:bg-[#005DE8] scale-75"
 								/>
 							</div>
 						</div>
@@ -1487,7 +1495,7 @@ export function SettingsPanel({
 					type="button"
 					size="lg"
 					onClick={onExport}
-					className="w-full py-5 text-sm font-semibold flex items-center justify-center gap-2 bg-[#34B27B] text-white rounded-xl shadow-lg shadow-[#34B27B]/20 hover:bg-[#34B27B]/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+					className="w-full py-5 text-sm font-semibold flex items-center justify-center gap-2 bg-[#005DE8] text-white rounded-xl shadow-lg shadow-[#005DE8]/20 hover:bg-[#005DE8]/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
 				>
 					<Download className="w-4 h-4" />
 					{exportFormat === "gif" ? t("export.gifButton") : t("export.videoButton")}
@@ -1503,7 +1511,7 @@ export function SettingsPanel({
 						}}
 						className="flex-1 flex items-center justify-center gap-1.5 text-[10px] text-slate-500 hover:text-slate-300 py-1.5 transition-colors"
 					>
-						<Bug className="w-3 h-3 text-[#34B27B]" />
+						<Bug className="w-3 h-3 text-[#005DE8]" />
 						{t("links.reportBug")}
 					</button>
 					<button

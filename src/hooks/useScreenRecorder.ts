@@ -268,6 +268,17 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 					}
 
 					await window.electronAPI.switchToEditor();
+
+					// Apply crop if it was a region recording
+					const selectedSource = await window.electronAPI.getSelectedSource();
+					if (selectedSource?.crop) {
+						// Wait a bit for editor state to initialize
+						setTimeout(() => {
+							// We need a way to communicate this to the editor.
+							// For now, let's assume the editor can pick it up from the project data
+							// or we can add a new IPC channel.
+						}, 500);
+					}
 				} catch (error) {
 					console.error("Error saving recording:", error);
 				} finally {

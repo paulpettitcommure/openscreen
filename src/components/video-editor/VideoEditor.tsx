@@ -55,12 +55,14 @@ import TimelineEditor from "./timeline/TimelineEditor";
 import {
 	type AnnotationRegion,
 	type BlurData,
+	type CalloutData,
 	type CursorTelemetryPoint,
 	clampFocusToDepth,
 	DEFAULT_ANNOTATION_POSITION,
 	DEFAULT_ANNOTATION_SIZE,
 	DEFAULT_ANNOTATION_STYLE,
 	DEFAULT_BLUR_DATA,
+	DEFAULT_CALLOUT_DATA,
 	DEFAULT_FIGURE_DATA,
 	DEFAULT_PLAYBACK_SPEED,
 	DEFAULT_ZOOM_DEPTH,
@@ -279,6 +281,17 @@ export default function VideoEditor() {
 		[pushState],
 	);
 
+	const handleAnnotationCalloutDataChange = useCallback(
+		(id: string, calloutData: CalloutData) => {
+			pushState((prev) => ({
+				annotationRegions: prev.annotationRegions.map((region) =>
+					region.id === id ? { ...region, calloutData } : region,
+				),
+			}));
+		},
+		[pushState],
+	);
+
 	const currentProjectSnapshot = useMemo(() => {
 		if (!currentProjectMedia) {
 			return null;
@@ -377,8 +390,17 @@ export default function VideoEditor() {
 					setWebcamVideoSourcePath(null);
 					setWebcamVideoPath(null);
 					setCurrentProjectPath(null);
+					const source = await window.electronAPI.getSelectedSource();
+					const initialEditorState = source?.crop
+						? { ...INITIAL_EDITOR_STATE, cropRegion: source.crop }
+						: INITIAL_EDITOR_STATE;
+
+					if (source?.crop) {
+						updateState({ cropRegion: source.crop });
+					}
+
 					setLastSavedSnapshot(
-						createProjectSnapshot({ screenVideoPath: sourcePath }, INITIAL_EDITOR_STATE),
+						createProjectSnapshot({ screenVideoPath: sourcePath }, initialEditorState),
 					);
 				} else {
 					setError("No video to load. Please record or select a video.");
@@ -1038,6 +1060,11 @@ export default function VideoEditor() {
 						if (!region.blurData) {
 							updatedRegion.blurData = { ...DEFAULT_BLUR_DATA };
 						}
+					} else if (type === "callout") {
+						updatedRegion.content = region.textContent || "Enter text...";
+						if (!region.calloutData) {
+							updatedRegion.calloutData = { ...DEFAULT_CALLOUT_DATA };
+						}
 					}
 					return updatedRegion;
 				}),
@@ -1664,7 +1691,7 @@ export default function VideoEditor() {
 					<button
 						type="button"
 						onClick={handleLoadProject}
-						className="px-3 py-1.5 rounded-md bg-[#34B27B] text-white text-sm hover:bg-[#34B27B]/90"
+						className="px-3 py-1.5 rounded-md bg-[#005DE8] text-white text-sm hover:bg-[#005DE8]/90"
 					>
 						Load Project File
 					</button>
@@ -1674,7 +1701,7 @@ export default function VideoEditor() {
 	}
 
 	return (
-		<div className="flex flex-col h-screen bg-[#09090b] text-slate-200 overflow-hidden selection:bg-[#34B27B]/30">
+		<div className="flex flex-col h-screen bg-[#09090b] text-slate-200 overflow-hidden selection:bg-[#005DE8]/30">
 			<Dialog open={showNewRecordingDialog} onOpenChange={setShowNewRecordingDialog}>
 				<DialogContent
 					className="sm:max-w-[425px]"
@@ -1695,7 +1722,7 @@ export default function VideoEditor() {
 						<button
 							type="button"
 							onClick={handleNewRecordingConfirm}
-							className="px-4 py-2 rounded-md bg-[#34B27B] text-white hover:bg-[#34B27B]/90 text-sm font-medium transition-colors"
+							className="px-4 py-2 rounded-md bg-[#005DE8] text-white hover:bg-[#005DE8]/90 text-sm font-medium transition-colors"
 						>
 							{t("newRecording.confirm")}
 						</button>
@@ -1992,6 +2019,7 @@ export default function VideoEditor() {
 						onAnnotationTypeChange={handleAnnotationTypeChange}
 						onAnnotationStyleChange={handleAnnotationStyleChange}
 						onAnnotationFigureDataChange={handleAnnotationFigureDataChange}
+						onAnnotationCalloutDataChange={handleAnnotationCalloutDataChange}
 						onAnnotationDelete={handleAnnotationDelete}
 						selectedBlurId={selectedBlurId}
 						blurRegions={blurRegions}

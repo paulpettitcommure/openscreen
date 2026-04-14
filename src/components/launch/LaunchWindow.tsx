@@ -6,6 +6,7 @@ import { FaFolderOpen } from "react-icons/fa6";
 import { FiMinus, FiX } from "react-icons/fi";
 import {
 	MdCancel,
+	MdCropFree,
 	MdMic,
 	MdMicOff,
 	MdMonitor,
@@ -52,6 +53,7 @@ const ICON_CONFIG = {
 	folder: { icon: FaFolderOpen, size: ICON_SIZE },
 	minimize: { icon: FiMinus, size: ICON_SIZE },
 	close: { icon: FiX, size: ICON_SIZE },
+	crop: { icon: MdCropFree, size: ICON_SIZE },
 } as const;
 
 type IconName = keyof typeof ICON_CONFIG;
@@ -384,15 +386,25 @@ export function LaunchWindow() {
 				</div>
 
 				{/* Source selector */}
-				<button
-					className={`${hudGroupClasses} p-2 ${styles.electronNoDrag}`}
-					onClick={openSourceSelector}
-					disabled={recording}
-					title={selectedSource}
-				>
-					{getIcon("monitor", "text-white/80")}
-					<span className="text-white/70 text-[11px] max-w-[72px] truncate">{selectedSource}</span>
-				</button>
+				<div className={`${hudGroupClasses} ${styles.electronNoDrag}`}>
+					<button
+						className="flex items-center gap-1 p-2 rounded-full transition-all duration-150 cursor-pointer text-white hover:bg-white/10"
+						onClick={openSourceSelector}
+						disabled={recording}
+						title={selectedSource}
+					>
+						{getIcon("monitor", "text-white/80")}
+						<span className="text-white/70 text-[11px] max-w-[72px] truncate">{selectedSource}</span>
+					</button>
+					<button
+						className={`${hudIconBtnClasses}`}
+						onClick={() => window.electronAPI.openRegionSelector()}
+						disabled={recording}
+						title="Select Region"
+					>
+						{getIcon("crop", "text-white/80")}
+					</button>
+				</div>
 
 				{/* Audio controls group */}
 				<div className={`${hudGroupClasses} ${styles.electronNoDrag}`}>
