@@ -28,23 +28,20 @@ export default function App() {
 	}, []);
 
 	const content = (() => {
+		// In pure web, we only care about the editor.
+		// If an Electron window type is specified, we handle it for backward compat.
 		switch (windowType) {
 			case "hud-overlay":
 				return <LaunchWindow />;
 			case "source-selector":
 				return <SourceSelector />;
 			case "editor":
+			default:
 				return (
 					<ShortcutsProvider>
 						<VideoEditor />
 						<ShortcutsConfigDialog />
 					</ShortcutsProvider>
-				);
-			default:
-				return (
-					<div className="w-full h-full bg-background text-foreground">
-						<h1>Openscreen</h1>
-					</div>
 				);
 		}
 	})();

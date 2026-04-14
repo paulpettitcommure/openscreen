@@ -6,8 +6,8 @@ export class ElectronAdapter implements PlatformAdapter {
 		return window.electronAPI.getPlatform();
 	}
 
-	async getSources(opts?: any): Promise<ProcessedDesktopSource[]> {
-		return window.electronAPI.getSources(opts);
+	async getSources(opts?: unknown): Promise<ProcessedDesktopSource[]> {
+		return window.electronAPI.getSources(opts as any);
 	}
 
 	async switchToEditor(): Promise<void> {
@@ -230,11 +230,11 @@ export class ElectronAdapter implements PlatformAdapter {
 		return window.electronAPI.revealInFolder(filePath);
 	}
 
-	async getShortcuts(): Promise<any> {
+	async getShortcuts(): Promise<unknown> {
 		return window.electronAPI.getShortcuts();
 	}
 
-	async saveShortcuts(shortcuts: any): Promise<{ success: boolean; error?: string }> {
+	async saveShortcuts(shortcuts: unknown): Promise<{ success: boolean; error?: string }> {
 		return window.electronAPI.saveShortcuts(shortcuts);
 	}
 }

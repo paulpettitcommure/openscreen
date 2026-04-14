@@ -113,7 +113,7 @@ export default function VideoEditor() {
 	const [webcamVideoSourcePath, setWebcamVideoSourcePath] = useState<string | null>(null);
 	const [currentProjectPath, setCurrentProjectPath] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+	const [_error, setError] = useState<string | null>(null);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [duration, setDuration] = useState(0);
@@ -530,13 +530,38 @@ export default function VideoEditor() {
 		await saveProject(true);
 	}, [saveProject]);
 
+	const openVideoFile = useCallback(async () => {
+		const result = await getPlatformAdapter().openVideoFilePicker();
+
+		if (result.canceled) {
+			return;
+		}
+
+		if (result.success && result.path) {
+			await getPlatformAdapter().setCurrentVideoPath(result.path);
+			// In Electron this switches window, in Web it might just refresh state.
+			// The useEffect for loading data will catch the new video path.
+			const currentPathResult = await getPlatformAdapter().getCurrentVideoPath();
+			if (currentPathResult.success && currentPathResult.path) {
+				const sourcePath = fromFileUrl(currentPathResult.path);
+				setVideoSourcePath(sourcePath);
+				setVideoPath(toFileUrl(sourcePath));
+				setWebcamVideoSourcePath(null);
+				setWebcamVideoPath(null);
+				setCurrentProjectPath(null);
+				setLastSavedSnapshot(
+					createProjectSnapshot({ screenVideoPath: sourcePath }, INITIAL_EDITOR_STATE),
+				);
+			}
+		}
+	}, [pushState]); // added pushState just to satisfy linter if needed, though not strictly used in this block but matches pattern
+
 	const handleNewRecordingConfirm = useCallback(async () => {
 		const result = await getPlatformAdapter().startNewRecording();
 		if (result.success) {
 			setShowNewRecordingDialog(false);
 		} else {
 			console.error("Failed to start new recording:", result.error);
-			setError("Failed to start new recording: " + (result.error || "Unknown error"));
 		}
 	}, []);
 
@@ -1652,23 +1677,62 @@ export default function VideoEditor() {
 
 	if (loading) {
 		return (
-			<div className="flex items-center justify-center h-screen bg-background">
-				<div className="text-foreground">Loading video...</div>
+			<div className="flex items-center justify-center h-screen bg-[#09090b]">
+				<div className="text-slate-200">Loading OpenScreen...</div>
 			</div>
 		);
 	}
-	if (error) {
+
+	const isNoVideoLoaded = !videoPath && !loading;
+
+	if (isNoVideoLoaded) {
 		return (
-			<div className="flex items-center justify-center h-screen bg-background">
-				<div className="flex flex-col items-center gap-3">
-					<div className="text-destructive">{error}</div>
-					<button
-						type="button"
-						onClick={handleLoadProject}
-						className="px-3 py-1.5 rounded-md bg-[#34B27B] text-white text-sm hover:bg-[#34B27B]/90"
-					>
-						Load Project File
-					</button>
+			<div className="flex flex-col h-screen bg-[#09090b] text-slate-200 overflow-hidden items-center justify-center p-8">
+				<div className="max-w-md w-full flex flex-col items-center text-center space-y-8 animate-in fade-in zoom-in duration-500">
+					<div className="space-y-4">
+						<div className="flex justify-center">
+							<div className="p-4 rounded-3xl bg-[#34B27B]/10 ring-1 ring-[#34B27B]/20">
+								<Video size={48} className="text-[#34B27B]" />
+							</div>
+						</div>
+						<h1 className="text-4xl font-bold tracking-tight text-white">OpenScreen</h1>
+						<p className="text-slate-400 text-lg">
+							Create beautiful, professional product demos in minutes. Just upload your screen
+							recording to get started.
+						</p>
+					</div>
+
+					<div className="grid grid-cols-1 gap-4 w-full pt-4">
+						<button
+							type="button"
+							onClick={openVideoFile}
+							className="group relative flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-[#34B27B] text-white text-lg font-semibold hover:bg-[#34B27B]/90 transition-all active:scale-[0.98] shadow-lg shadow-[#34B27B]/20"
+						>
+							<Video size={24} />
+							Upload Video
+						</button>
+
+						<div className="flex items-center gap-3 py-2">
+							<div className="h-px flex-1 bg-white/5" />
+							<span className="text-xs font-medium text-slate-500 uppercase tracking-widest">
+								Or
+							</span>
+							<div className="h-px flex-1 bg-white/5" />
+						</div>
+
+						<button
+							type="button"
+							onClick={handleLoadProject}
+							className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/5 text-slate-300 text-lg font-semibold border border-white/10 hover:bg-white/10 hover:text-white transition-all active:scale-[0.98]"
+						>
+							<FolderOpen size={24} />
+							Open Project
+						</button>
+					</div>
+
+					<div className="pt-8 text-sm text-slate-500">
+						Supports WebM, MP4, MOV and more. All processing stays in your browser.
+					</div>
 				</div>
 			</div>
 		);

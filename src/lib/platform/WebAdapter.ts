@@ -295,11 +295,11 @@ export class WebAdapter implements PlatformAdapter {
 		return { success: true };
 	}
 
-	async getShortcuts(): Promise<any> {
+	async getShortcuts(): Promise<unknown> {
 		return null;
 	}
 
-	async saveShortcuts(_shortcuts: any): Promise<{ success: boolean }> {
+	async saveShortcuts(_shortcuts: unknown): Promise<{ success: boolean }> {
 		return { success: true };
 	}
 }

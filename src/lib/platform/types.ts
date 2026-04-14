@@ -16,7 +16,7 @@ export interface CursorTelemetryPoint {
 
 export interface PlatformAdapter {
 	getPlatform(): Promise<string>;
-	getSources(opts?: any): Promise<ProcessedDesktopSource[]>;
+	getSources(opts?: unknown): Promise<ProcessedDesktopSource[]>;
 	switchToEditor(): Promise<void>;
 	switchToHud(): Promise<void>;
 	startNewRecording(): Promise<{ success: boolean; error?: string }>;
@@ -127,6 +127,6 @@ export interface PlatformAdapter {
 		error?: string;
 	}>;
 	revealInFolder(filePath: string): Promise<{ success: boolean; error?: string; message?: string }>;
-	getShortcuts(): Promise<any>;
-	saveShortcuts(shortcuts: any): Promise<{ success: boolean; error?: string }>;
+	getShortcuts(): Promise<unknown>;
+	saveShortcuts(shortcuts: unknown): Promise<{ success: boolean; error?: string }>;
 }
