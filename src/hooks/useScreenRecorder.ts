@@ -2,6 +2,7 @@ import { fixWebmDuration } from "@fix-webm-duration/fix";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useScopedT } from "@/contexts/I18nContext";
+import { getPlatformAdapter } from "@/lib/platform/adapter";
 import { requestCameraAccess } from "@/lib/requestCameraAccess";
 
 const TARGET_FRAME_RATE = 60;
@@ -219,7 +220,7 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 			setElapsedSeconds(0);
 			accumulatedDurationMs.current = 0;
 			segmentStartedAt.current = null;
-			window.electronAPI?.setRecordingState(false);
+			getPlatformAdapter()?.setRecordingState(false);
 
 			void (async () => {
 				try {
@@ -242,7 +243,7 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 
 					const screenFileName = `${RECORDING_FILE_PREFIX}${activeRecordingId}${VIDEO_FILE_EXTENSION}`;
 					const webcamFileName = `${RECORDING_FILE_PREFIX}${activeRecordingId}${WEBCAM_FILE_SUFFIX}${VIDEO_FILE_EXTENSION}`;
-					const result = await window.electronAPI.storeRecordedSession({
+					const result = await getPlatformAdapter().storeRecordedSession({
 						screen: {
 							videoData: await fixedScreenBlob.arrayBuffer(),
 							fileName: screenFileName,
@@ -262,12 +263,12 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 					}
 
 					if (result.session) {
-						await window.electronAPI.setCurrentRecordingSession(result.session);
+						await getPlatformAdapter().setCurrentRecordingSession(result.session);
 					} else if (result.path) {
-						await window.electronAPI.setCurrentVideoPath(result.path);
+						await getPlatformAdapter().setCurrentVideoPath(result.path);
 					}
 
-					await window.electronAPI.switchToEditor();
+					await getPlatformAdapter().switchToEditor();
 				} catch (error) {
 					console.error("Error saving recording:", error);
 				} finally {
@@ -327,8 +328,8 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 	useEffect(() => {
 		let cleanup: (() => void) | undefined;
 
-		if (window.electronAPI?.onStopRecordingFromTray) {
-			cleanup = window.electronAPI.onStopRecordingFromTray(() => {
+		if (getPlatformAdapter()?.onStopRecordingFromTray) {
+			cleanup = getPlatformAdapter().onStopRecordingFromTray(() => {
 				stopRecording.current();
 			});
 		}
@@ -367,7 +368,7 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 
 	const startRecording = async () => {
 		try {
-			const selectedSource = await window.electronAPI.getSelectedSource();
+			const selectedSource = await getPlatformAdapter().getSelectedSource();
 			if (!selectedSource) {
 				alert(t("recording.selectSource"));
 				return;
@@ -553,7 +554,7 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 			setRecording(true);
 			setPaused(false);
 			setElapsedSeconds(0);
-			window.electronAPI?.setRecordingState(true);
+			getPlatformAdapter()?.setRecordingState(true);
 
 			const activeScreenRecorder = screenRecorder.current;
 			const activeWebcamRecorder = webcamRecorder.current;

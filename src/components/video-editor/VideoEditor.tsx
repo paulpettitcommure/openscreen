@@ -29,6 +29,7 @@ import {
 	VideoExporter,
 } from "@/lib/exporter";
 import { computeFrameStepTime } from "@/lib/frameStep";
+import { getPlatformAdapter } from "@/lib/platform/adapter";
 import type { ProjectMedia } from "@/lib/recordingSession";
 import { matchesShortcut } from "@/lib/shortcuts";
 import { loadUserPreferences, saveUserPreferences } from "@/lib/userPreferences";
@@ -335,7 +336,7 @@ export default function VideoEditor() {
 	useEffect(() => {
 		async function loadInitialData() {
 			try {
-				const currentProjectResult = await window.electronAPI.loadCurrentProjectFile();
+				const currentProjectResult = await getPlatformAdapter().loadCurrentProjectFile();
 				if (currentProjectResult.success && currentProjectResult.project) {
 					const restored = await applyLoadedProject(
 						currentProjectResult.project,
@@ -346,7 +347,7 @@ export default function VideoEditor() {
 					}
 				}
 
-				const currentSessionResult = await window.electronAPI.getCurrentRecordingSession();
+				const currentSessionResult = await getPlatformAdapter().getCurrentRecordingSession();
 				if (currentSessionResult.success && currentSessionResult.session) {
 					const session = currentSessionResult.session;
 					const sourcePath = fromFileUrl(session.screenVideoPath);
@@ -369,7 +370,7 @@ export default function VideoEditor() {
 					return;
 				}
 
-				const result = await window.electronAPI.getCurrentVideoPath();
+				const result = await getPlatformAdapter().getCurrentVideoPath();
 				if (result.success && result.path) {
 					const sourcePath = fromFileUrl(result.path);
 					setVideoSourcePath(sourcePath);
@@ -457,7 +458,7 @@ export default function VideoEditor() {
 					.pop()
 					?.replace(/\.[^.]+$/, "") || `project-${Date.now()}`;
 			const projectSnapshot = JSON.stringify(projectData);
-			const result = await window.electronAPI.saveProjectFile(
+			const result = await getPlatformAdapter().saveProjectFile(
 				projectData,
 				fileNameBase,
 				forceSaveAs ? undefined : (currentProjectPath ?? undefined),
@@ -511,11 +512,11 @@ export default function VideoEditor() {
 	);
 
 	useEffect(() => {
-		window.electronAPI.setHasUnsavedChanges(hasUnsavedChanges);
+		getPlatformAdapter().setHasUnsavedChanges(hasUnsavedChanges);
 	}, [hasUnsavedChanges]);
 
 	useEffect(() => {
-		const cleanup = window.electronAPI.onRequestSaveBeforeClose(async () => {
+		const cleanup = getPlatformAdapter().onRequestSaveBeforeClose(async () => {
 			return saveProject(false);
 		});
 		return () => cleanup();
@@ -530,7 +531,7 @@ export default function VideoEditor() {
 	}, [saveProject]);
 
 	const handleNewRecordingConfirm = useCallback(async () => {
-		const result = await window.electronAPI.startNewRecording();
+		const result = await getPlatformAdapter().startNewRecording();
 		if (result.success) {
 			setShowNewRecordingDialog(false);
 		} else {
@@ -540,7 +541,7 @@ export default function VideoEditor() {
 	}, []);
 
 	const handleLoadProject = useCallback(async () => {
-		const result = await window.electronAPI.loadProjectFile();
+		const result = await getPlatformAdapter().loadProjectFile();
 
 		if (result.canceled) {
 			return;
@@ -561,9 +562,9 @@ export default function VideoEditor() {
 	}, [applyLoadedProject]);
 
 	useEffect(() => {
-		const removeLoadListener = window.electronAPI.onMenuLoadProject(handleLoadProject);
-		const removeSaveListener = window.electronAPI.onMenuSaveProject(handleSaveProject);
-		const removeSaveAsListener = window.electronAPI.onMenuSaveProjectAs(handleSaveProjectAs);
+		const removeLoadListener = getPlatformAdapter().onMenuLoadProject(handleLoadProject);
+		const removeSaveListener = getPlatformAdapter().onMenuSaveProject(handleSaveProject);
+		const removeSaveAsListener = getPlatformAdapter().onMenuSaveProjectAs(handleSaveProjectAs);
 
 		return () => {
 			removeLoadListener?.();
@@ -586,7 +587,7 @@ export default function VideoEditor() {
 			}
 
 			try {
-				const result = await window.electronAPI.getCursorTelemetry(sourcePath);
+				const result = await getPlatformAdapter().getCursorTelemetry(sourcePath);
 				if (mounted) {
 					setCursorTelemetry(result.success ? result.samples : []);
 				}
@@ -1252,7 +1253,7 @@ export default function VideoEditor() {
 
 	const handleShowExportedFile = useCallback(async (filePath: string) => {
 		try {
-			const result = await window.electronAPI.revealInFolder(filePath);
+			const result = await getPlatformAdapter().revealInFolder(filePath);
 			if (!result.success) {
 				const errorMessage = result.error || result.message || "Failed to reveal item in folder.";
 				console.error("Failed to reveal in folder:", errorMessage);
@@ -1284,7 +1285,7 @@ export default function VideoEditor() {
 	const handleSaveUnsavedExport = useCallback(async () => {
 		if (!unsavedExport) return;
 		try {
-			const saveResult = await window.electronAPI.saveExportedVideo(
+			const saveResult = await getPlatformAdapter().saveExportedVideo(
 				unsavedExport.arrayBuffer,
 				unsavedExport.fileName,
 			);
@@ -1382,7 +1383,7 @@ export default function VideoEditor() {
 						const timestamp = Date.now();
 						const fileName = `export-${timestamp}.gif`;
 
-						const saveResult = await window.electronAPI.saveExportedVideo(arrayBuffer, fileName);
+						const saveResult = await getPlatformAdapter().saveExportedVideo(arrayBuffer, fileName);
 
 						if (saveResult.canceled) {
 							setUnsavedExport({ arrayBuffer, fileName, format: "gif" });
@@ -1516,7 +1517,7 @@ export default function VideoEditor() {
 						const timestamp = Date.now();
 						const fileName = `export-${timestamp}.mp4`;
 
-						const saveResult = await window.electronAPI.saveExportedVideo(arrayBuffer, fileName);
+						const saveResult = await getPlatformAdapter().saveExportedVideo(arrayBuffer, fileName);
 
 						if (saveResult.canceled) {
 							setUnsavedExport({ arrayBuffer, fileName, format: "mp4" });

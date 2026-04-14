@@ -7,6 +7,8 @@ function encodeRelativeAssetPath(relativePath: string): string {
 		.join("/");
 }
 
+import { getPlatformAdapter } from "./platform/adapter";
+
 function ensureTrailingSlash(value: string): string {
 	return value.endsWith("/") ? value : `${value}/`;
 }
@@ -25,11 +27,9 @@ export async function getAssetPath(relativePath: string): Promise<string> {
 				return `/${encodedRelativePath}`;
 			}
 
-			if (window.electronAPI && typeof window.electronAPI.getAssetBasePath === "function") {
-				const base = await window.electronAPI.getAssetBasePath();
-				if (base) {
-					return new URL(encodedRelativePath, ensureTrailingSlash(base)).toString();
-				}
+			const base = await getPlatformAdapter().getAssetBasePath();
+			if (base) {
+				return new URL(encodedRelativePath, ensureTrailingSlash(base)).toString();
 			}
 		}
 	} catch {

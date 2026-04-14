@@ -13,21 +13,21 @@ function getDeniedStatus(error: unknown) {
 	return "unknown";
 }
 
+import { getPlatformAdapter } from "./platform/adapter";
+
 export async function requestCameraAccess(): Promise<CameraAccessResult> {
-	if (window.electronAPI?.requestCameraAccess) {
-		try {
-			const electronResult = await window.electronAPI.requestCameraAccess();
-			if (!electronResult.success || !electronResult.granted) {
-				return electronResult;
-			}
-		} catch (error) {
-			return {
-				success: false,
-				granted: false,
-				status: "error",
-				error: String(error),
-			};
+	try {
+		const result = await getPlatformAdapter().requestCameraAccess();
+		if (!result.success || !result.granted) {
+			return result;
 		}
+	} catch (error) {
+		return {
+			success: false,
+			granted: false,
+			status: "error",
+			error: String(error),
+		};
 	}
 
 	if (!navigator.mediaDevices?.getUserMedia) {
