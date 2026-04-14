@@ -38,6 +38,7 @@ import { getAssetPath } from "@/lib/assetPath";
 import { WEBCAM_LAYOUT_PRESETS } from "@/lib/compositeLayout";
 import type { ExportFormat, ExportQuality, GifFrameRate, GifSizePreset } from "@/lib/exporter";
 import { GIF_FRAME_RATES, GIF_SIZE_PRESETS } from "@/lib/exporter";
+import { getPlatformAdapter } from "@/lib/platform/adapter";
 import { cn } from "@/lib/utils";
 import { type AspectRatio, isPortraitAspectRatio } from "@/utils/aspectRatioUtils";
 import { getTestId } from "@/utils/getTestId";
@@ -1497,7 +1498,7 @@ export function SettingsPanel({
 					<button
 						type="button"
 						onClick={() => {
-							window.electronAPI?.openExternalUrl(
+							getPlatformAdapter()?.openExternalUrl(
 								"https://github.com/siddharthvaddem/openscreen/issues/new/choose",
 							);
 						}}
@@ -1509,7 +1510,9 @@ export function SettingsPanel({
 					<button
 						type="button"
 						onClick={() => {
-							window.electronAPI?.openExternalUrl("https://github.com/siddharthvaddem/openscreen");
+							getPlatformAdapter()?.openExternalUrl(
+								"https://github.com/siddharthvaddem/openscreen",
+							);
 						}}
 						className="flex-1 flex items-center justify-center gap-1.5 text-[10px] text-slate-500 hover:text-slate-300 py-1.5 transition-colors"
 					>

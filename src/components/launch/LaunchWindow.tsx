@@ -20,6 +20,7 @@ import { RxDragHandleDots2 } from "react-icons/rx";
 import { useI18n, useScopedT } from "@/contexts/I18nContext";
 import { type Locale, SUPPORTED_LOCALES } from "@/i18n/config";
 import { getLocaleName } from "@/i18n/loader";
+import { getPlatformAdapter } from "@/lib/platform/adapter";
 import { isMac as getIsMac } from "@/utils/platformUtils";
 import { useAudioLevelMeter } from "../../hooks/useAudioLevelMeter";
 import { useCameraDevices } from "../../hooks/useCameraDevices";
@@ -167,8 +168,8 @@ export function LaunchWindow() {
 
 	useEffect(() => {
 		const checkSelectedSource = async () => {
-			if (window.electronAPI) {
-				const source = await window.electronAPI.getSelectedSource();
+			if (getPlatformAdapter()) {
+				const source = await getPlatformAdapter().getSelectedSource();
 				if (source) {
 					setSelectedSource(source.name);
 					setHasSelectedSource(true);
@@ -186,38 +187,38 @@ export function LaunchWindow() {
 	}, []);
 
 	const openSourceSelector = () => {
-		if (window.electronAPI) {
-			window.electronAPI.openSourceSelector();
+		if (getPlatformAdapter()) {
+			getPlatformAdapter().openSourceSelector();
 		}
 	};
 
 	const openVideoFile = async () => {
-		const result = await window.electronAPI.openVideoFilePicker();
+		const result = await getPlatformAdapter().openVideoFilePicker();
 
 		if (result.canceled) {
 			return;
 		}
 
 		if (result.success && result.path) {
-			await window.electronAPI.setCurrentVideoPath(result.path);
-			await window.electronAPI.switchToEditor();
+			await getPlatformAdapter().setCurrentVideoPath(result.path);
+			await getPlatformAdapter().switchToEditor();
 		}
 	};
 
 	const openProjectFile = async () => {
-		const result = await window.electronAPI.loadProjectFile();
+		const result = await getPlatformAdapter().loadProjectFile();
 		if (result.canceled || !result.success) return;
-		await window.electronAPI.switchToEditor();
+		await getPlatformAdapter().switchToEditor();
 	};
 
 	const sendHudOverlayHide = () => {
-		if (window.electronAPI && window.electronAPI.hudOverlayHide) {
-			window.electronAPI.hudOverlayHide();
+		if (getPlatformAdapter() && getPlatformAdapter().hudOverlayHide) {
+			getPlatformAdapter().hudOverlayHide();
 		}
 	};
 	const sendHudOverlayClose = () => {
-		if (window.electronAPI && window.electronAPI.hudOverlayClose) {
-			window.electronAPI.hudOverlayClose();
+		if (getPlatformAdapter() && getPlatformAdapter().hudOverlayClose) {
+			getPlatformAdapter().hudOverlayClose();
 		}
 	};
 

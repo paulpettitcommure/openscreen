@@ -15,6 +15,7 @@ import {
 	SUPPORTED_LOCALES,
 } from "@/i18n/config";
 import { translate } from "@/i18n/loader";
+import { getPlatformAdapter } from "@/lib/platform/adapter";
 
 type TranslateVars = Record<string, string | number>;
 
@@ -66,7 +67,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 		}
 		document.documentElement.lang = newLocale;
 		// Notify Electron main process
-		window.electronAPI?.setLocale?.(newLocale);
+		getPlatformAdapter()?.setLocale?.(newLocale);
 	}, []);
 
 	useEffect(() => {
