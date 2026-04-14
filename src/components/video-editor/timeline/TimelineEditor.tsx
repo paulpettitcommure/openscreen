@@ -379,7 +379,7 @@ function PlaybackCursor({
 			}}
 		>
 			<div
-				className="absolute top-0 bottom-0 w-[2px] bg-[#34B27B] shadow-[0_0_10px_rgba(52,178,123,0.5)] cursor-ew-resize pointer-events-auto hover:shadow-[0_0_15px_rgba(52,178,123,0.7)] transition-shadow"
+				className="absolute top-0 bottom-0 w-[2px] bg-[#005DE8] shadow-[0_0_10px_rgba(52,178,123,0.5)] cursor-ew-resize pointer-events-auto hover:shadow-[0_0_15px_rgba(52,178,123,0.7)] transition-shadow"
 				style={{
 					[sideProperty]: `${offset}px`,
 				}}
@@ -393,7 +393,7 @@ function PlaybackCursor({
 					className="absolute -top-1 left-1/2 -translate-x-1/2 hover:scale-125 transition-transform"
 					style={{ width: "16px", height: "16px" }}
 				>
-					<div className="w-3 h-3 mx-auto mt-[2px] bg-[#34B27B] rotate-45 rounded-sm shadow-lg border border-white/20" />
+					<div className="w-3 h-3 mx-auto mt-[2px] bg-[#005DE8] rotate-45 rounded-sm shadow-lg border border-white/20" />
 				</div>
 				{isDragging && (
 					<div className="absolute -top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] text-white/90 font-medium tabular-nums whitespace-nowrap border border-white/10 shadow-lg pointer-events-none">
@@ -513,7 +513,7 @@ function TimelineAxis({
 							<span
 								className={cn(
 									"text-[10px] font-medium tabular-nums tracking-tight",
-									marker.time === currentTimeMs ? "text-[#34B27B]" : "text-slate-500",
+									marker.time === currentTimeMs ? "text-[#005DE8]" : "text-slate-500",
 								)}
 							>
 								{marker.label}
@@ -1461,7 +1461,7 @@ export default function TimelineEditor({
 						onClick={handleAddZoom}
 						variant="ghost"
 						size="icon"
-						className="h-7 w-7 text-slate-400 hover:text-[#34B27B] hover:bg-[#34B27B]/10 transition-all"
+						className="h-7 w-7 text-slate-400 hover:text-[#005DE8] hover:bg-[#005DE8]/10 transition-all"
 						title={t("buttons.addZoom")}
 					>
 						<ZoomIn className="w-4 h-4" />
@@ -1470,7 +1470,7 @@ export default function TimelineEditor({
 						onClick={handleSuggestZooms}
 						variant="ghost"
 						size="icon"
-						className="h-7 w-7 text-slate-400 hover:text-[#34B27B] hover:bg-[#34B27B]/10 transition-all"
+						className="h-7 w-7 text-slate-400 hover:text-[#005DE8] hover:bg-[#005DE8]/10 transition-all"
 						title={t("buttons.suggestZooms")}
 					>
 						<WandSparkles className="w-4 h-4" />
@@ -1542,7 +1542,7 @@ export default function TimelineEditor({
 									className="text-slate-300 hover:text-white hover:bg-white/10 cursor-pointer flex items-center justify-between gap-3"
 								>
 									<span>{getAspectRatioLabel(ratio)}</span>
-									{aspectRatio === ratio && <Check className="w-3 h-3 text-[#34B27B]" />}
+									{aspectRatio === ratio && <Check className="w-3 h-3 text-[#005DE8]" />}
 								</DropdownMenuItem>
 							))}
 						</DropdownMenuContent>
@@ -1553,13 +1553,13 @@ export default function TimelineEditor({
 				<div className="flex-1" />
 				<div className="flex items-center gap-4 text-[10px] text-slate-500 font-medium">
 					<span className="flex items-center gap-1.5">
-						<kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#34B27B] font-sans">
+						<kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#005DE8] font-sans">
 							{scrollLabels.pan}
 						</kbd>
 						<span>{t("labels.pan")}</span>
 					</span>
 					<span className="flex items-center gap-1.5">
-						<kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#34B27B] font-sans">
+						<kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#005DE8] font-sans">
 							{scrollLabels.zoom}
 						</kbd>
 						<span>{t("labels.zoom")}</span>

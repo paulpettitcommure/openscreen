@@ -37,7 +37,7 @@ export function BlurSettingsPanel({
 			<div className="mb-6">
 				<div className="flex items-center justify-between mb-4">
 					<span className="text-sm font-medium text-slate-200">{t("annotation.blurShape")}</span>
-					<span className="text-[10px] uppercase tracking-wider font-medium text-[#34B27B] bg-[#34B27B]/10 px-2 py-1 rounded-full">
+					<span className="text-[10px] uppercase tracking-wider font-medium text-[#005DE8] bg-[#005DE8]/10 px-2 py-1 rounded-full">
 						{t("annotation.active")}
 					</span>
 				</div>
@@ -63,7 +63,7 @@ export function BlurSettingsPanel({
 								className={cn(
 									"h-16 rounded-lg border flex flex-col items-center justify-center transition-all p-2 gap-1",
 									isActive
-										? "bg-[#34B27B] border-[#34B27B]"
+										? "bg-[#005DE8] border-[#005DE8]"
 										: "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20",
 								)}
 							>
@@ -113,7 +113,7 @@ export function BlurSettingsPanel({
 						min={MIN_BLUR_INTENSITY}
 						max={MAX_BLUR_INTENSITY}
 						step={1}
-						className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+						className="w-full [&_[role=slider]]:bg-[#005DE8] [&_[role=slider]]:border-[#005DE8] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 					/>
 				</div>
 

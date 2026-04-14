@@ -29,8 +29,11 @@ interface Window {
 		switchToHud: () => Promise<void>;
 		startNewRecording: () => Promise<{ success: boolean; error?: string }>;
 		openSourceSelector: () => Promise<void>;
+		openRegionSelector: () => Promise<void>;
 		selectSource: (source: ProcessedDesktopSource) => Promise<ProcessedDesktopSource | null>;
+		selectRegion: (region: import("../src/components/video-editor/types").CropRegion) => Promise<ProcessedDesktopSource | null>;
 		getSelectedSource: () => Promise<ProcessedDesktopSource | null>;
+		clearSelectedSource: () => Promise<void>;
 		requestCameraAccess: () => Promise<{
 			success: boolean;
 			granted: boolean;
@@ -148,6 +151,7 @@ interface ProcessedDesktopSource {
 	display_id: string;
 	thumbnail: string | null;
 	appIcon: string | null;
+	crop?: import("../src/components/video-editor/types").CropRegion;
 }
 
 interface CursorTelemetryPoint {

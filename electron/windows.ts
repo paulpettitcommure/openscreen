@@ -86,6 +86,46 @@ export function createHudOverlayWindow(): BrowserWindow {
 }
 
 /**
+ * Creates a full-screen transparent window for region selection.
+ */
+export function createRegionSelectorWindow(): BrowserWindow {
+	const primaryDisplay = screen.getPrimaryDisplay();
+	const { width, height, x, y } = primaryDisplay.bounds;
+
+	const win = new BrowserWindow({
+		width,
+		height,
+		x,
+		y,
+		frame: false,
+		transparent: true,
+		resizable: false,
+		alwaysOnTop: true,
+		skipTaskbar: true,
+		enableLargerThanScreen: true,
+		webPreferences: {
+			preload: path.join(__dirname, "preload.mjs"),
+			nodeIntegration: false,
+			contextIsolation: true,
+		},
+	});
+
+	if (process.platform === "darwin") {
+		win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+	}
+
+	if (VITE_DEV_SERVER_URL) {
+		win.loadURL(VITE_DEV_SERVER_URL + "?windowType=region-selector");
+	} else {
+		win.loadFile(path.join(RENDERER_DIST, "index.html"), {
+			query: { windowType: "region-selector" },
+		});
+	}
+
+	return win;
+}
+
+/**
  * Creates the main editor window. Starts maximised with a hidden title bar on
  * macOS. This window is not always-on-top and appears in the taskbar/dock.
  */

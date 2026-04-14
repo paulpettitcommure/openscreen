@@ -65,7 +65,7 @@ export function SourceSelector() {
 				style={{ minHeight: "100vh" }}
 			>
 				<div className="text-center">
-					<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#34B27B] mx-auto mb-2" />
+					<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#005DE8] mx-auto mb-2" />
 					<p className="text-xs text-zinc-400">{t("sourceSelector.loading")}</p>
 				</div>
 			</div>
@@ -154,7 +154,7 @@ export function SourceSelector() {
 				<Button
 					onClick={handleShare}
 					disabled={!selectedSource}
-					className="px-5 py-1 text-xs bg-[#34B27B] text-white hover:bg-[#34B27B]/80 disabled:opacity-30 disabled:bg-zinc-700 rounded-full"
+					className="px-5 py-1 text-xs bg-[#005DE8] text-white hover:bg-[#005DE8]/80 disabled:opacity-30 disabled:bg-zinc-700 rounded-full"
 				>
 					{tc("actions.share")}
 				</Button>
